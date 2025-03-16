@@ -204,8 +204,6 @@ def get_tweet_content(url):
     
     return result
 
-# CSV support removed - following UNIX philosophy, let specialized tools handle it
-
 
 def clean_tweet_data(tweet_data):
     """Clean tweet data to remove empty values."""
