@@ -238,7 +238,6 @@ def main():
     # Input sources
     input_group = parser.add_argument_group('Input options')
     input_group.add_argument('urls', nargs='*', help='URL(s) of the X post(s)')
-    input_group.add_argument('--stdin', action='store_true', help='Read URLs from stdin (one URL per line)')
     input_group.add_argument('--limit', type=int, help='Limit the number of tweets to process')
     
     # Output format
@@ -253,22 +252,22 @@ def main():
     urls_to_process = []
     verbose = not args.quiet
     
-    # Read URLs from stdin
-    if args.stdin:
-        for line in sys.stdin:
-            url = line.strip()
-            if url and (url.startswith('http://') or url.startswith('https://')):
-                urls_to_process.append(url)
-        if verbose:
-            print(f"Loaded {len(urls_to_process)} URLs from stdin", file=sys.stderr)
-    
     # Add URLs specified on command line
     if args.urls:
         urls_to_process.extend(args.urls)
     
+    # Auto-detect if stdin has data (for piping) when no URLs provided via arguments
+    if not urls_to_process and not sys.stdin.isatty():
+        for line in sys.stdin:
+            url = line.strip()
+            if url and (url.startswith('http://') or url.startswith('https://')):
+                urls_to_process.append(url)
+        if verbose and urls_to_process:
+            print(f"Loaded {len(urls_to_process)} URLs from stdin", file=sys.stderr)
+    
     # Error if no URLs provided
     if not urls_to_process:
-        print("Error: No URLs provided. Use --stdin or provide URLs as arguments.", file=sys.stderr)
+        print("Error: No URLs provided. Either pass URLs as arguments or pipe data to stdin.", file=sys.stderr)
         sys.exit(1)
     
     # Limit number of URLs to process (if specified)

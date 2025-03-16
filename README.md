@@ -18,8 +18,8 @@ python get_x_post.py https://x.com/user/status/123456789
 # Get content from multiple URLs
 python get_x_post.py https://x.com/user1/status/123456789 https://x.com/user2/status/987654321
 
-# Read URLs from stdin
-cat urls.txt | python get_x_post.py --stdin
+# Read URLs from stdin (works automatically with pipes)
+cat urls.txt | python get_x_post.py
 
 # Output as JSONL (one JSON object per line)
 python get_x_post.py https://x.com/user/status/123456789 --format jsonl
@@ -33,8 +33,9 @@ python get_x_post.py https://x.com/user/status/123456789 --quiet
 ```
 Input:
   urls                  URL(s) of X/Twitter post(s)
-  --stdin               Read URLs from stdin (one per line)
   --limit N             Process only N URLs
+  
+  Note: The tool automatically detects if data is piped via stdin
 
 Output:
   --format FORMAT       Output format: json (default) or jsonl
